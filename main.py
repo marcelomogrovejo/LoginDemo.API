@@ -111,6 +111,19 @@ def delete_user(user_id):
     
     return jsonify({'message': 'User deleted successfully'}), 204
 
+# POST Login user
+@app.route('/users/login', methods=['POST'])
+def login_user():
+    data = request.get_json()
+    print(data)
+    if not data or not all(key in data for key in ('email', 'password')):
+        return jsonify({'Error': 'Missing required fields'}), 400
+    
+    user = User.query.filter_by(email=data['email'], password=data['password']).first()
+    if user:
+        return jsonify(user.do_dict())
+    else:
+        return jsonify({'Error': 'Invalid email or password'}), 401
 
 if __name__ == '__main__':
     # To run and refresh all the time, add debug=True
