@@ -1,3 +1,7 @@
+
+
+# TODO: format the readme
+
 1. Create the virtual envirionment: it will create a new folder api_env with the
 necessary files to run the virtual environment.
 
