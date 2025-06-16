@@ -1,3 +1,36 @@
+## LoginDemo.API
+# This is a simple Flask API for user management, including login functionality.
+# It allows you to create, read, update, and delete users, as well as login with email and password.
+#
+# ## Source: https://www.youtube.com/watch?v=Ha3ls0EAtW8
+#
+# ## Requirements
+# - Python 3.x
+# - Flask
+# - Flask-SQLAlchemy
+# - SQLite (or any other database supported by SQLAlchemy)
+#
+# ## Setup Instructions
+# 1. Create a virtual environment:
+#    ```bash
+#    python3 -m venv api_env
+#    ```
+# 2. Activate the virtual environment:
+#    - On macOS/Linux:
+#      ```bash
+#      source api_env/bin/activate
+#      ```
+# 3. Install the required packages:
+#    ```bash
+#    pip3 install Flask Flask-SQLAlchemy
+#    ```
+# 4. Create a SQLite database file named `LoginDemo.db` in the same directory as this script.
+# 5. Run the application:
+#    ```bash
+#    python main.py
+#    ```
+# 6. Access the API at `http://
+
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 
