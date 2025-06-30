@@ -1,0 +1,9 @@
+{
+    "python.analysis.extraPaths": [
+        "./Repositories",
+        "./Repositories/User",
+        "./Services/User",
+        "./Controllers/User",
+        "./Routes/User"
+    ]
+}
