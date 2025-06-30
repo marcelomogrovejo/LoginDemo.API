@@ -41,3 +41,29 @@ zipp               3.23.0
 $ pip3 freeze > requirements.txt
 
 7. Create a main.py file# LoginDemo.API
+
+
+
+
+
+Structure
+
+loginemoapi/
+├── __init__.py          # To make 'logindemoapi' a Python package
+├── app.py               # Main Flask application factory
+├── models/
+│   ├── __init__.py
+│   └── user_model.py            # SQLAlchemy models
+├── repositories/
+│   ├── __init__.py
+│   └── user_repository.py
+├── services/
+│   ├── __init__.py
+│   └── user_service.py
+├── controllers/
+│   ├── __init__.py
+│   └── user_controller.py
+├── routes/
+│   ├── __init__.py
+│   └── user_routes.py
+└── config.py            # For configuration (optional but good practice)
