@@ -7,21 +7,27 @@
 
 1. Create the virtual envirionment: it will create a new folder api_env with the
 necessary files to run the virtual environment.
+```bash
 $ python -m venv api_env
-
+```
 2. Activate the new virtual environment:
+```bash
 $ source api_env/bin/activate
-
+```
 3. Install flask:
+```bash
 $ pip3 install flask
-
+```
 4. Install the ORM -> SQLAlchemy
+```bash
 $ pip3 install flask-sqlalchemy
-
+```
 5. Check if evertything is installed correctly:
+```bash
 $ pip3 list
-
+```
 Output:
+```bash
 ┌--------------------------┬-----------┐<br>
 | Package                  | Version   |<br>
 ├--------------------------┼-----------┤<br>
@@ -77,7 +83,7 @@ Output:
 | wheel                    | 0.37.0    |
 | zipp                     | 3.23.0    |
 └--------------------------┴-----------┘
-
+```
 6. Create the freeze requirements file (Like a dependencies):
 $ pip3 freeze > requirements.txt
 
