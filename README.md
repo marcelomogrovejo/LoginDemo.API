@@ -27,16 +27,16 @@ $ pip3 install flask-sqlalchemy
 $ pip3 list
 ```
 Output:
-```bash
-┌--------------------------┬-----------┐<br>
-| Package                  | Version   |<br>
-├--------------------------┼-----------┤<br>
-| altgraph                 | 0.17.2    |<br>
-| beautifulsoup4           | 4.13.4    |<br>
-| blinker                  | 1.9.0     |<br>
-| cachetools               | 5.5.2     |<br>
-| certifi                  | 2025.4.26 |<br>
-| charset-normalizer       | 3.4.2     |<br>
+```console
+┌--------------------------┬-----------┐
+| Package                  | Version   |
+├--------------------------┼-----------┤
+| altgraph                 | 0.17.2    |
+| beautifulsoup4           | 4.13.4    |
+| blinker                  | 1.9.0     |
+| cachetools               | 5.5.2     |
+| certifi                  | 2025.4.26 |
+| charset-normalizer       | 3.4.2     |
 | click                    | 8.1.8     |
 | filelock                 | 3.18.0    |
 | Flask                    | 3.1.1     |
@@ -88,7 +88,7 @@ Output:
 $ pip3 freeze > requirements.txt
 
 # Structure
-
+```console
 loginemoapi/
 ├── api_env
 ├── login_api/
@@ -114,7 +114,7 @@ loginemoapi/
 ├── README.md
 ├── requirements.txt
 └── run.py
-
+```
 # Production
 
 Solutions for Production
@@ -127,28 +127,32 @@ if __name__ == '__main__':
 
 2. For Production (Recommended Options)
 Option A: Waitress (Simplest production server)
+```bash
 $ pip3 install waitress
-
+```
 Then modify run.py:
-
+```python
 from waitress import serve
 from login_api.app import app
-```python
+
 if __name__ == '__main__':
     serve(app, host='0.0.0.0', port=5000)
 ```
 
 Option B: Gunicorn (Popular for Linux)
+```bash
 $ pip3 install gunicorn
-
+```
 Run with:
+```python
 $ gunicorn -w 4 -b 0.0.0.0:5000 "login_api.app:create_app()"
-
+```
 Option C: uWSGI (High performance)
+```python
 $ pip3 install uwsgi
-
+```
 Create uwsgi.ini:
-
+```console
 ini
 [uwsgi]
 module = login_api.app:app
@@ -156,7 +160,7 @@ master = true
 processes = 5
 socket = 0.0.0.0:5000
 protocol = http
-
+```
 Important Production Considerations
 1. Environment Variables: Use .env for configuration
 2. Reverse Proxy: Use Nginx/Apache in front of your app server
@@ -164,13 +168,14 @@ Important Production Considerations
 4. HTTPS: Always use SSL in production (Let's Encrypt is free)
 
 Development vs Production Checklist
-
-┌----------------┬-----------------┬-------------------------┐<br>
-| Feature        | Development     | Production              |<br>
-├----------------┼-----------------┼-------------------------┤<br>
-| Server         | Flask built-in  | Gunicorn/uWSGI/Waitress |<br>
-| Debug Mode     | On              | Off                     |<br>
-| Threading      | Single          | Multiple workers        |<br>
-| Error Handling | Detailed errors | Generic error pages     |<br>
-| Port           | 5000            | 80/443 (via proxy)      |<br>
-└----------------┴-----------------┴-------------------------┘<br>
+```console
+┌----------------┬-----------------┬-------------------------┐
+| Feature        | Development     | Production              |
+├----------------┼-----------------┼-------------------------┤
+| Server         | Flask built-in  | Gunicorn/uWSGI/Waitress |
+| Debug Mode     | On              | Off                     |
+| Threading      | Single          | Multiple workers        |
+| Error Handling | Detailed errors | Generic error pages     |
+| Port           | 5000            | 80/443 (via proxy)      |
+└----------------┴-----------------┴-------------------------┘
+```
