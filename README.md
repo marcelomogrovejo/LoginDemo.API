@@ -22,15 +22,15 @@ $ pip3 install flask-sqlalchemy
 $ pip3 list
 
 Output:
-┌--------------------------┬-----------┐
-| Package                  | Version   |
-├--------------------------┼-----------┤
-| altgraph                 | 0.17.2    |
-| beautifulsoup4           | 4.13.4    |
-| blinker                  | 1.9.0     |
-| cachetools               | 5.5.2     |    
-| certifi                  | 2025.4.26 |
-| charset-normalizer       | 3.4.2     |
+┌--------------------------┬-----------┐<br>
+| Package                  | Version   |<br>
+├--------------------------┼-----------┤<br>
+| altgraph                 | 0.17.2    |<br>
+| beautifulsoup4           | 4.13.4    |<br>
+| blinker                  | 1.9.0     |<br>
+| cachetools               | 5.5.2     |<br>
+| certifi                  | 2025.4.26 |<br>
+| charset-normalizer       | 3.4.2     |<br>
 | click                    | 8.1.8     |
 | filelock                 | 3.18.0    |
 | Flask                    | 3.1.1     |
@@ -159,12 +159,12 @@ Important Production Considerations
 
 Development vs Production Checklist
 
-┌----------------┬-----------------┬-------------------------┐
-| Feature        | Development     | Production              |
-├----------------┼-----------------┼-------------------------┤
-| Server         | Flask built-in  | Gunicorn/uWSGI/Waitress |
-| Debug Mode     | On              | Off                     |
-| Threading      | Single          | Multiple workers        |
-| Error Handling | Detailed errors | Generic error pages     |
-| Port           | 5000            | 80/443 (via proxy)      |
-└----------------┴-----------------┴-------------------------┘
+┌----------------┬-----------------┬-------------------------┐<br>
+| Feature        | Development     | Production              |<br>
+├----------------┼-----------------┼-------------------------┤<br>
+| Server         | Flask built-in  | Gunicorn/uWSGI/Waitress |<br>
+| Debug Mode     | On              | Off                     |<br>
+| Threading      | Single          | Multiple workers        |<br>
+| Error Handling | Detailed errors | Generic error pages     |<br>
+| Port           | 5000            | 80/443 (via proxy)      |<br>
+└----------------┴-----------------┴-------------------------┘<br>
