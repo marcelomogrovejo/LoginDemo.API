@@ -115,6 +115,12 @@ loginemoapi/
 ├── requirements.txt
 └── run.py
 ```
+
+7. Run:
+```bash
+$ python3 run.py
+```
+
 # Production
 
 Solutions for Production

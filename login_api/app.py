@@ -6,7 +6,7 @@ from login_api.extensions import db
 from login_api.repositories.user_repository import UserRepository
 from login_api.services.user_service import UserService
 from login_api.controllers.user_controller import UserController
-from login_api.routes.user_routes import init_user_routes # Import the initializer for routes
+from login_api.routes.user_routes import init_user_routes
 
 def create_app():
     """
@@ -41,6 +41,11 @@ def create_app():
     user_routes_blueprint = init_user_routes(controller=user_controller)
     flask_app.register_blueprint(user_routes_blueprint)
 
+    # GET method to retrieve the home page
+    @flask_app.route('/')
+    def home():
+        return jsonify({'message': 'Welcome to the Login Demo API'})
+
     # --- Global Error Handlers (optional, but good practice) ---
     @flask_app.errorhandler(404)
     def not_found_error(error):
@@ -53,7 +58,5 @@ def create_app():
 
     return flask_app
 
-# if __name__ == '__main__':
-    # When running directly, create and run the app
 app = create_app()
 app.run(debug=True) # debug=True for development, turn off in production
