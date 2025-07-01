@@ -84,4 +84,37 @@ class UserController:
             print(f"Unhandled error in UserController.get_all_users: {e}")
             return jsonify({"message": "An unexpected error occurred."}), 500
 
-    # Add other methods for update, delete, etc.
+    def update_user(self, user_id: int):
+        """
+        Handles PUT /users/<int:user_id> request to update an existing user.
+        """
+        data = request.get_json()
+        if not data:
+            return jsonify({"message": "No input data provided"}), 400
+
+        # email = data.get('email')
+        first_name = data.get('first_name', '')
+        last_name = data.get('last_name', '')
+        # is_active = data.get('is_active', True)
+
+        # Input Validation (Controller's responsibility)
+        # if not email or not isinstance(email, str) or "@" not in email:
+        #     return jsonify({"message": "Email must be a valid email address"}), 400
+        
+        # TODO: if fist_name or last_name are provided, validate them
+
+
+        try:
+            updated_user_data = self.user_service.update_user(user_id, 
+                                                            #   email, 
+                                                              first_name,
+                                                              last_name
+                                                            #   ,
+                                                            #   is_active
+                                                              )
+            return jsonify({
+                "message": "User updated successfully",
+                "user": updated_user_data
+            }), 200
+        except ValueError as e:
+            return jsonify({"message": str(e)}), 404
