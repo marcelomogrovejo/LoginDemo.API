@@ -91,27 +91,17 @@ class UserController:
         data = request.get_json()
         if not data:
             return jsonify({"message": "No input data provided"}), 400
-
-        # email = data.get('email')
         first_name = data.get('first_name', '')
         last_name = data.get('last_name', '')
-        # is_active = data.get('is_active', True)
 
         # Input Validation (Controller's responsibility)
         # if not email or not isinstance(email, str) or "@" not in email:
         #     return jsonify({"message": "Email must be a valid email address"}), 400
-        
-        # TODO: if fist_name or last_name are provided, validate them
-
 
         try:
             updated_user_data = self.user_service.update_user(user_id, 
-                                                            #   email, 
                                                               first_name,
-                                                              last_name
-                                                            #   ,
-                                                            #   is_active
-                                                              )
+                                                              last_name)
             return jsonify({
                 "message": "User updated successfully",
                 "user": updated_user_data
