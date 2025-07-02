@@ -23,6 +23,6 @@ def init_user_routes(controller: UserController):
     user_bp.add_url_rule('/', 'get_all_users', _user_controller.get_all_users, methods=['GET'])
     user_bp.add_url_rule('/<int:user_id>', 'get_user_by_id', _user_controller.get_user_by_id, methods=['GET'])
     user_bp.add_url_rule('/<int:user_id>', 'update_user', _user_controller.update_user, methods=['PUT'])
-    # user_bp.add_url_rule('/<int:user_id>', 'delete_user', _user_controller.delete_user, methods=['DELETE'])
+    user_bp.add_url_rule('/<int:user_id>', 'delete_user', _user_controller.delete_user, methods=['DELETE'])
 
     return user_bp
