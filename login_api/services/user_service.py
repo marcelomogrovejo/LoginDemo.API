@@ -113,3 +113,29 @@ class UserService:
         except Exception as e:
             self.user_repo.db_session.rollback() # Rollback on any unexpected error
             raise RuntimeError(f"An unexpected error occurred during user creation: {e}") from e
+        
+    def delete_user(self, user_id: int) -> None:
+        """
+        Deletes a user by ID.
+    
+        Args:
+            user_id (int): The ID of the user to delete.
+    
+        Raises:
+            ValueError: If the user does not exist.
+            RuntimeError: For unexpected database errors.
+        """
+        user = self.user_repo.get_by_id(user_id)
+        if not user:
+            raise ValueError(f"User with ID {user_id} does not exist.")
+        
+        try:
+            self.user_repo.delete(user)
+            self.user_repo.db_session.commit()  # Commit the transaction here!
+        except ValueError as e:
+            raise # Re-raise if it's a business logic error
+        except RuntimeError as e:
+            raise # Re-raise for unexpected database errors
+        except Exception as e:
+            self.user_repo.db_session.rollback() # Rollback on any unexpected error
+            raise RuntimeError(f"An unexpected error occurred during user deletion: {e}") from e
