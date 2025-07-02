@@ -108,3 +108,16 @@ class UserController:
             }), 200
         except ValueError as e:
             return jsonify({"message": str(e)}), 404
+        
+    def delete_user(self, user_id: int):
+        """
+        Handles DELETE /users/<int:user_id> request to delete a user.
+        """
+        try:
+            self.user_service.delete_user(user_id)
+            return jsonify({"message": "User deleted successfully"}), 204
+        except ValueError as e:
+            return jsonify({"message": str(e)}), 404
+        except Exception as e:
+            print(f"Unhandled error in UserController.delete_user: {e}")
+            return jsonify({"message": "An unexpected error occurred."}), 500
