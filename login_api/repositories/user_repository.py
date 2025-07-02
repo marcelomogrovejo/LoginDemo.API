@@ -66,11 +66,10 @@ class UserRepository:
         """Retrieves all users."""
         return self.db_session.execute(db.select(User)).scalars().all()
 
-    # Add other CRUD operations as needed
-    # def update(self, user: User) -> User:
-    #     self.db_session.add(user) # Re-add if it was detached or modified
-    #     self.db_session.flush()
-    #     return user
-    #
-    # def delete(self, user: User):
-    #     self.db_session.delete(user)
+    def update(self, user: User) -> User:
+        self.db_session.add(user) # Re-add if it was detached or modified
+        self.db_session.flush()
+        return user
+    
+    def delete(self, user: User):
+        self.db_session.delete(user)

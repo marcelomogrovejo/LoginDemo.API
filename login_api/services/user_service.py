@@ -73,4 +73,43 @@ class UserService:
         users = self.user_repo.get_all()
         return [user.to_dict() for user in users]
 
-    # Add other business logic methods (update, delete, login, etc.)
+    def update_user(self, user_id: int, 
+                    first_name: Optional[str] = None,
+                    last_name: Optional[str] = None) -> dict:
+        """
+        Updates an existing user with new data.
+    
+        Args:
+            user_id (int): The ID of the user to update.
+            first_name (Optional[str]): New first name for the user.
+            last_name (Optional[str]): New last name for the user.
+    
+        Returns:
+            dict: The updated user data.
+    
+        Raises:
+            ValueError: If the user does not exist
+            RuntimeError: For unexpected database errors.
+        """
+        # Fetch existing user
+        user = self.user_repo.get_by_id(user_id)
+        if not user:
+            raise ValueError(f"User with ID {user_id} does not exist.")
+    
+        # Update fields if provided
+        if first_name:
+            user.first_name = first_name
+        if last_name:
+            user.last_name = last_name
+        
+        try:
+            self.user_repo.update(user)
+            self.user_repo.db_session.commit()  # Commit the transaction here!
+            return user.to_dict()
+        except ValueError as e:
+            raise # Re-raise if it's a business logic error
+        except RuntimeError as e:
+            raise # Re-raise for unexpected database errors
+        except Exception as e:
+            self.user_repo.db_session.rollback() # Rollback on any unexpected error
+            raise RuntimeError(f"An unexpected error occurred during user creation: {e}") from e
