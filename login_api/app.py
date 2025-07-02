@@ -7,6 +7,8 @@ from login_api.repositories.user_repository import UserRepository
 from login_api.services.user_service import UserService
 from login_api.controllers.user_controller import UserController
 from login_api.routes.user_routes import init_user_routes
+from login_api.error_handler.exceptions import APIError
+
 
 def create_app():
     """
@@ -47,14 +49,19 @@ def create_app():
         return jsonify({'message': 'Welcome to the Login Demo API'})
 
     # --- Global Error Handlers (optional, but good practice) ---
+    @flask_app.errorhandler(APIError)
+    def handle_api_error(error):
+        response = jsonify(error.to_dict())
+        response.status_code = error.status_code
+        return response
+
     @flask_app.errorhandler(404)
-    def not_found_error(error):
-        return jsonify({"message": "Resource not found"}), 404
+    def handle_not_found(e):
+        return jsonify(message="Resource not found"), 404
 
     @flask_app.errorhandler(500)
-    def internal_error(error):
-        db.session.rollback() # Ensure rollback on unhandled 500 errors
-        return jsonify({"message": "Internal server error"}), 500
+    def handle_server_error(e):
+        return jsonify(message="Internal server error"), 500
 
     return flask_app
 

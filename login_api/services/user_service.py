@@ -2,6 +2,7 @@
 
 from typing import Optional
 from login_api.repositories.user_repository import UserRepository
+from login_api.error_handler.user_exceptions import UserNotFoundError
 # For password hashing (install Flask-Bcrypt or passlib if not already)
 # from flask_bcrypt import Bcrypt
 # bcrypt = Bcrypt() # Initialize in app.py and pass to service if needed more broadly
@@ -63,10 +64,12 @@ class UserService:
             self.user_repo.db_session.rollback() # Rollback on any unexpected error
             raise RuntimeError(f"An unexpected error occurred during user creation: {e}") from e
 
-    def get_user_by_id(self, user_id: int) -> Optional[dict]:
+    def get_user_by_id(self, user_id: int) -> dict:
         """Retrieves a user by ID."""
         user = self.user_repo.get_by_id(user_id)
-        return user.to_dict() if user else None
+        if not user:
+            raise UserNotFoundError()
+        return user.to_dict()
 
     def get_all_users(self) -> list[dict]:
         """Retrieves all users."""

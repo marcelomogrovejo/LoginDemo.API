@@ -2,7 +2,11 @@
 
 from typing import Optional
 from login_api.models import db, User # Relative import from logindemoapi.models
-from sqlalchemy.exc import IntegrityError # For handling unique constraints etc.
+# IntegrityError: for handling unique constraints etc.
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
+from login_api.error_handler.user_exceptions import UserNotFoundError
+from login_api.error_handler.exceptions import DatabaseError
+
 
 class UserRepository:
     """
@@ -54,13 +58,28 @@ class UserRepository:
             self.db_session.rollback() # Rollback on any other database error
             raise RuntimeError(f"Database error adding user: {e}") from e
 
-    def get_by_id(self, user_id: int) -> Optional[User]:
+    def get_by_id(self, user_id: int) -> User:
         """Retrieves a user by their ID."""
-        return self.db_session.get(User, user_id)
+        try:
+            user = self.db_session.get(User, user_id)
+            if not user:
+                raise UserNotFoundError()
+            return user
+        except SQLAlchemyError as e:
+            raise DatabaseError(str(e)) from e
 
-    def get_by_email(self, email: str) -> Optional[User]:
-        """Retrieves a user by their email address."""
-        return self.db_session.execute(db.select(User).filter_by(email=email)).scalar_one_or_none()
+    # Uncomment if you want to implement email-based retrieval on authentication
+    # def get_by_email(self, email: str) -> Optional[User]:
+    #     """Retrieves a user by their email."""
+    #     try:
+    #         user = self.db_session.execute(
+    #             db.select(User).filter_by(email=email)
+    #         ).scalar_one_or_none()
+    #         if not user:
+    #             raise UserNotFoundError()
+    #         return user
+    #     except SQLAlchemyError as e:
+    #         raise DatabaseError(str(e)) from e
 
     def get_all(self) -> list[User]:
         """Retrieves all users."""

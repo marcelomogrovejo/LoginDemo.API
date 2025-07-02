@@ -2,6 +2,7 @@
 
 from flask import request, jsonify
 from login_api.services.user_service import UserService
+from login_api.error_handler.exceptions import APIError
 
 # You might use a schema validation library here like Marshmallow or Pydantic
 # For simplicity, we'll do basic manual validation.
@@ -66,12 +67,15 @@ class UserController:
         """
         try:
             user_data = self.user_service.get_user_by_id(user_id)
-            if user_data:
-                return jsonify(user_data), 200
-            return jsonify({"message": "User not found"}), 404
+            if not user_data:
+                raise APIError("User not found", 404)
+            return jsonify(user_data), 200
+            
+        except APIError:
+            raise
         except Exception as e:
             print(f"Unhandled error in UserController.get_user_by_id: {e}")
-            return jsonify({"message": "An unexpected error occurred."}), 500
+            raise APIError("Login failed", 500)
 
     def get_all_users(self):
         """
