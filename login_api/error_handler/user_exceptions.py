@@ -7,6 +7,11 @@ class UserNotFoundError(APIError):
     def __init__(self, message="User not found"):
         super().__init__(message, 404)
 
+class UserAlreadyExistsError(APIError):
+    """User already exists"""
+    def __init__(self, message="User with this email already exists"):
+        super().__init__(message, 409)
+
 # class AuthenticationError(APIError):
 #     """Login failed"""
 #     def __init__(self, message="Invalid credentials"):

@@ -65,7 +65,18 @@ class UserService:
             raise RuntimeError(f"An unexpected error occurred during user creation: {e}") from e
 
     def get_user_by_id(self, user_id: int) -> dict:
-        """Retrieves a user by ID."""
+        """
+        Retrieves a user by ID.
+        
+        Args:
+            user_id (int): The ID of the user to retrieve.
+
+        Returns:
+            dict: A dictionary representation of the user.
+
+        Raises:
+            UserNotFoundError: If no user with the given ID exists.
+        """
         user = self.user_repo.get_by_id(user_id)
         if not user:
             raise UserNotFoundError()
