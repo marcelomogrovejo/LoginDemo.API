@@ -81,7 +81,7 @@ class UserRepository:
 
     # Used by create_user in user_service.py
     # This method is used to check if a user with the given email already exists.
-    def get_by_email(self, email: str) -> User:
+    def get_by_email(self, email: str) -> Optional[User]:
         """
         Retrieves a user by their email.
 
@@ -98,7 +98,8 @@ class UserRepository:
         try:
             user = self.db_session.execute(db.select(User).filter_by(email=email)).scalar_one_or_none()
             if not user:
-                raise UserNotFoundError()
+                # raise UserNotFoundError()
+                return None
             return user
         except SQLAlchemyError as e:
             raise DatabaseError(str(e)) from e
