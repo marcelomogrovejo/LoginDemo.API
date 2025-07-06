@@ -98,7 +98,6 @@ class UserRepository:
         try:
             user = self.db_session.execute(db.select(User).filter_by(email=email)).scalar_one_or_none()
             if not user:
-                # raise UserNotFoundError()
                 return None
             return user
         except SQLAlchemyError as e:
