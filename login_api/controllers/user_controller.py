@@ -19,10 +19,19 @@ class UserController:
     def create_user(self):
         """
         Handles POST /users request to create a new user.
+
+        Args:
+            None
+
+        Returns:
+            JSON response with success message and user data or error message.
+
+        Raises:
+            APIError: If input validation fails or if an unexpected error occurs.
         """
         data = request.get_json()
         if not data:
-            return jsonify({"message": "No input data provided"}), 400
+            raise APIError("No input data provided", 400)
 
         email = data.get('email')
         password = data.get('password')
@@ -32,12 +41,13 @@ class UserController:
 
         # Input Validation (Controller's responsibility)
         if not all([email, password]):
-            return jsonify({"message": "Missing required fields (email, password)"}), 400
+            raise APIError("Missing required fields (email, password)", 400)
         if not isinstance(email, str) or not email.strip() or "@" not in email:
-            return jsonify({"message": "Email must be a valid email address"}), 400
+            raise APIError("Email must be a valid email address", 400)
         if not isinstance(password, str) or len(password) < 8:
-            return jsonify({"message": "Password must be at least 8 characters long"}), 400
-        # Add more validation (e.g., email format regex, password complexity)
+            raise APIError("Password must be at least 8 characters long", 400)
+
+        # TODO: Add more validation (e.g., email format regex, password complexity)
 
         try:
             # Delegate to the service layer
@@ -50,51 +60,75 @@ class UserController:
                 "message": "User created successfully",
                 "user": user_data
             }), 201
-        except ValueError as e:
-            # Business logic errors from service (e.g., duplicate email)
-            return jsonify({"message": str(e)}), 409 # 409 Conflict
-        except RuntimeError as e:
-            # Unexpected system/database errors
-            return jsonify({"message": "An internal server error occurred."}), 500
+        except APIError:
+            # Re-raise APIError to be handled by the global error handler
+            raise
         except Exception as e:
             # Catch any other unexpected errors
             print(f"Unhandled error in UserController.create_user: {e}")
-            return jsonify({"message": "An unexpected error occurred."}), 500
+            raise APIError("An unexpected error occurred while creating the user", 500)
 
     def get_user_by_id(self, user_id: int):
         """
         Handles GET /users/<int:user_id> request to retrieve a single user.
+
+        Args:
+            user_id (int): The ID of the user to retrieve.
+
+        Returns:
+            JSON response with user data or error message.
+
+        Raises:
+            APIError: If the user is not found or if an unexpected error occurs.
         """
         try:
             user_data = self.user_service.get_user_by_id(user_id)
             if not user_data:
                 raise APIError("User not found", 404)
-            return jsonify(user_data), 200
-            
+            return jsonify(user_data), 200  
         except APIError:
             raise
         except Exception as e:
             print(f"Unhandled error in UserController.get_user_by_id: {e}")
-            raise APIError("Login failed", 500)
+            raise APIError("An unexpected error occurred while retrieving the user", 500)
 
     def get_all_users(self):
         """
         Handles GET /users request to retrieve all users.
+
+        Args:
+            None
+
+        Returns:
+            JSON response with a list of users or an error message.
+
+        Raises:
+            APIError: If an unexpected error occurs while retrieving users.
         """
         try:
             users_list = self.user_service.get_all_users()
             return jsonify(users_list), 200
         except Exception as e:
             print(f"Unhandled error in UserController.get_all_users: {e}")
-            return jsonify({"message": "An unexpected error occurred."}), 500
+            return APIError("An unexpected error occurred while retrieving users", 500)
 
     def update_user(self, user_id: int):
         """
         Handles PUT /users/<int:user_id> request to update an existing user.
+
+        Args:
+            user_id (int): The ID of the user to update.
+
+        Returns:
+            JSON response with success message and updated user data or error message.
+
+        Raises:
+            APIError: If input validation fails or if an unexpected error occurs.
         """
         data = request.get_json()
         if not data:
-            return jsonify({"message": "No input data provided"}), 400
+            # return jsonify({"message": "No input data provided"}), 400
+            raise APIError("No input data provided", 400)
         first_name = data.get('first_name', '')
         last_name = data.get('last_name', '')
 
@@ -110,18 +144,32 @@ class UserController:
                 "message": "User updated successfully",
                 "user": updated_user_data
             }), 200
-        except ValueError as e:
-            return jsonify({"message": str(e)}), 404
+        # except ValueError as e:
+        #     return jsonify({"message": str(e)}), 404
+        except Exception as e:
+            print(f"Unhandled error in UserController.update_user: {e}")
+            # return jsonify({"message": "An unexpected error occurred."}), 500
+            raise APIError("An unexpected error occurred while updating the user", 500)
         
     def delete_user(self, user_id: int):
         """
         Handles DELETE /users/<int:user_id> request to delete a user.
+
+        Args:
+            user_id (int): The ID of the user to delete.
+
+        Returns:
+            JSON response with success message or error message.
+        
+        Raises:
+            APIError: If the user is not found or if an unexpected error occurs.
         """
         try:
             self.user_service.delete_user(user_id)
             return jsonify({"message": "User deleted successfully"}), 204
-        except ValueError as e:
-            return jsonify({"message": str(e)}), 404
+        # except ValueError as e:
+        #     return jsonify({"message": str(e)}), 404
         except Exception as e:
             print(f"Unhandled error in UserController.delete_user: {e}")
-            return jsonify({"message": "An unexpected error occurred."}), 500
+            # return jsonify({"message": "An unexpected error occurred."}), 500
+            raise APIError("An unexpected error occurred while deleting the user", 500)

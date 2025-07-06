@@ -8,6 +8,7 @@ from login_api.services.user_service import UserService
 from login_api.controllers.user_controller import UserController
 from login_api.routes.user_routes import init_user_routes
 from login_api.error_handler.exceptions import APIError
+import sys
 
 
 def create_app():
@@ -47,6 +48,17 @@ def create_app():
     @flask_app.route('/')
     def home():
         return jsonify({'message': 'Welcome to the Login Demo API'})
+    
+     # Redirect standard output to debug console
+    if sys.stdout != sys.__stdout__:
+        sys.stdout = sys.__stdout__
+        sys.stderr = sys.__stderr__
+
+    # Test route
+    @flask_app.route('/debug_test')
+    def debug_test():
+        print("THIS SHOULD APPEAR IN DEBUG CONSOLE")
+        return {"status": "success"}
 
     # --- Global Error Handlers (optional, but good practice) ---
     @flask_app.errorhandler(APIError)
