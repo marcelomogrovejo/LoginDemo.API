@@ -2,7 +2,11 @@
 
 from typing import Optional
 from login_api.models import db, User # Relative import from logindemoapi.models
-from sqlalchemy.exc import IntegrityError # For handling unique constraints etc.
+# IntegrityError: for handling unique constraints etc.
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
+from login_api.error_handler.user_exceptions import UserNotFoundError, UserAlreadyExistsError
+from login_api.error_handler.exceptions import DatabaseError
+
 
 class UserRepository:
     """
@@ -48,28 +52,121 @@ class UserRepository:
             self.db_session.flush() # Flush to get the ID if needed immediately (e.g., for related objects)
             return new_user
         except IntegrityError as e:
-            self.db_session.rollback() # Rollback on integrity errors
-            raise ValueError("User with this email already exists.") from e
-        except Exception as e:
-            self.db_session.rollback() # Rollback on any other database error
-            raise RuntimeError(f"Database error adding user: {e}") from e
+            self.db_session.rollback()
+            raise UserAlreadyExistsError()
+        except SQLAlchemyError as e:
+            raise DatabaseError(str(e)) from e
 
-    def get_by_id(self, user_id: int) -> Optional[User]:
-        """Retrieves a user by their ID."""
-        return self.db_session.get(User, user_id)
+    def get_by_id(self, user_id: int) -> User:
+        """
+        Retrieves a user by their ID.
 
+        Args:
+            user_id (int): The ID of the user to retrieve.
+
+        Returns:
+            User: The User object if found.
+        
+        Raises:
+            UserNotFoundError: If no user with the given ID exists.
+            DatabaseError: For any database-related errors.
+        """
+        try:
+            user = self.db_session.get(User, user_id)
+            if not user:
+                raise UserNotFoundError()
+            return user
+        except SQLAlchemyError as e:
+            raise DatabaseError(str(e)) from e
+
+    # Used by create_user in user_service.py
+    # This method is used to check if a user with the given email already exists.
     def get_by_email(self, email: str) -> Optional[User]:
-        """Retrieves a user by their email address."""
-        return self.db_session.execute(db.select(User).filter_by(email=email)).scalar_one_or_none()
+        """
+        Retrieves a user by their email.
+
+        Args:
+            email (str): The email of the user to retrieve.
+
+        Returns:
+            User: The User object if found.
+        
+        Raises:
+            UserNotFoundError: If no user with the given email exists.
+            DatabaseError: For any database-related errors.
+        """
+        try:
+            user = self.db_session.execute(db.select(User).filter_by(email=email)).scalar_one_or_none()
+            if not user:
+                return None
+            return user
+        except SQLAlchemyError as e:
+            raise DatabaseError(str(e)) from e
 
     def get_all(self) -> list[User]:
-        """Retrieves all users."""
-        return self.db_session.execute(db.select(User)).scalars().all()
+        """
+        Retrieves all users.
+
+        Args:
+            None
+        
+        Returns:
+            list[User]: A list of all User objects in the database.
+        
+        Raises:
+            DatabaseError: For any database-related errors.
+        """
+        try:
+            # Using scalars() to get a list of User objects directly
+            return self.db_session.execute(db.select(User)).scalars().all()
+        except SQLAlchemyError as e:
+            raise DatabaseError(str(e)) from e
 
     def update(self, user: User) -> User:
-        self.db_session.add(user) # Re-add if it was detached or modified
-        self.db_session.flush()
-        return user
+        """
+        Updates an existing user in the database.
+        
+        Args:
+            user (User): The User object with updated data.
+
+        Returns:
+            User: The updated User object.
+
+        Raises:
+            UserNotFoundError: If the user does not exist.
+            DatabaseError: For any database-related errors.
+        """
+        try:
+            existing_user = self.get_by_id(user.id)
+            if not existing_user:
+                raise UserNotFoundError()
+        
+            self.db_session.add(existing_user)
+            self.db_session.flush()
+            return existing_user
+        except SQLAlchemyError as e:
+            self.db_session.rollback()
+            raise DatabaseError(str(e)) from e
     
     def delete(self, user: User):
-        self.db_session.delete(user)
+        """
+        Deletes a user from the database.
+
+        Args:
+            user (User): The User object to delete.
+
+        Returns:
+            None
+        
+        Raises:
+            UserNotFoundError: If the user does not exist.
+            DatabaseError: For any database-related errors.
+        """
+        try:
+            existing_user = self.get_by_id(user.id)
+            if not existing_user:
+                raise UserNotFoundError()
+            self.db_session.delete(user)
+        except SQLAlchemyError as e:
+            self.db_session.rollback()
+            raise DatabaseError(str(e)) from e
