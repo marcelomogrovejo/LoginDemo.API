@@ -34,3 +34,16 @@ class User(db.Model):
             "created_at": self.created_at.isoformat(),
             "updated_at": self.updated_at.isoformat()
         }
+    
+    def verify_password(self, password: str) -> bool:
+        """
+        Verifies the provided password against the stored password hash.
+        
+        Args:
+            password (str): The password to verify.
+        
+        Returns:
+            bool: True if the password matches, False otherwise.
+        """
+        # Placeholder for real password verification logic
+        return self.password_hash == f"hashed_{password}_service"

@@ -14,6 +14,18 @@ class UserService:
     """
 
     def __init__(self, user_repository: UserRepository):
+        """
+        Initializes the UserService with a UserRepository instance.
+
+        Args:
+            user_repository (UserRepository): An instance of UserRepository to interact with the database.
+
+        Returns:
+            None
+
+        Raises:
+            None
+        """
         self.user_repo = user_repository
         # If you need Bcrypt here for hashing, pass it in init or import locally
         # self.bcrypt = bcrypt_instance

@@ -4,9 +4,13 @@ from flask import Flask, jsonify
 from login_api.config import Config
 from login_api.extensions import db
 from login_api.repositories.user_repository import UserRepository
+from login_api.repositories.auth_repository import AuthRepository
 from login_api.services.user_service import UserService
+from login_api.services.auth_service import AuthService
 from login_api.controllers.user_controller import UserController
+from login_api.controllers.auth_controller import AuthController
 from login_api.routes.user_routes import init_user_routes
+from login_api.routes.auth_routes import init_auth_routes
 from login_api.error_handler.exceptions import APIError
 import sys
 
@@ -32,18 +36,24 @@ def create_app():
     # 1. Initialize Repository Layer
     # The UserRepository gets the db.session implicitly from Flask-SQLAlchemy's app context.
     user_repository = UserRepository()
+    auth_repository = AuthRepository()
 
     # 2. Initialize Service Layer (injects repository)
     user_service = UserService(user_repository=user_repository)
+    auth_service = AuthService(auth_repository=auth_repository)
 
     # 3. Initialize Controller Layer (injects service)
     user_controller = UserController(user_service=user_service)
+    auth_controller = AuthController(auth_service=auth_service)
 
     # 4. Initialize and Register Routes Blueprint (injects controller)
     # The init_user_routes function returns the configured blueprint
     user_routes_blueprint = init_user_routes(controller=user_controller)
     flask_app.register_blueprint(user_routes_blueprint)
 
+    auth_routes_blueprint = init_auth_routes(controller=auth_controller)
+    flask_app.register_blueprint(auth_routes_blueprint)
+    
     # GET method to retrieve the home page
     @flask_app.route('/')
     def home():
