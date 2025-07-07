@@ -3,8 +3,12 @@
 from flask import Blueprint
 from login_api.controllers.user_controller import UserController # Relative import
 
+# Versioning for user routes
+# This versioning allows for future changes without breaking existing clients.
+user_routes_version = "v1.4.0"
+
 # Create a Blueprint instance for user routes
-user_bp = Blueprint('user_bp', __name__, url_prefix='/users')
+user_bp = Blueprint('user_bp', __name__, url_prefix=f'/{user_routes_version}/users')
 
 # Placeholder for user_controller instance (will be injected in main.py)
 _user_controller: UserController = None
