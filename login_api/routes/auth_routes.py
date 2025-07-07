@@ -3,8 +3,12 @@
 from flask import Blueprint
 from login_api.controllers.auth_controller import AuthController  # Relative import
 
+# Versioning for auth routes
+# This versioning allows for future changes without breaking existing clients.
+auth_routes_version = "v1.9.0"
+
 # Create a Blueprint instance for auth routes
-auth_bp = Blueprint('auth_bp', __name__, url_prefix='/auth')
+auth_bp = Blueprint('auth_bp', __name__, url_prefix=f'/{auth_routes_version}/auth')
 
 # Placeholder for auth_controller instance (will be injected in main.py)
 _auth_controller: AuthController = None
