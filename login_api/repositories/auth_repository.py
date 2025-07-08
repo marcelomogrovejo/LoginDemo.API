@@ -38,8 +38,11 @@ class AuthRepository:
         """
         try:
             user = self.db_session.query(User).filter_by(email=email).first()
-            if user and user.verify_password(password):
-                return True
-            return False
+            # if user and user.verify_password(password):
+            #     return True
+            # return False
+            if not user or not user.verify_hashed_password(password):
+                return False
+            return True
         except SQLAlchemyError as e:
             raise DatabaseError(str(e)) from e

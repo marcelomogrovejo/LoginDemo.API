@@ -45,6 +45,10 @@ class AuthController:
         try:
             # Delegate to the service layer
             user_data = self.auth_service.authenticate(email, password)
+
+            # TODO: user_data is a bool that is getting True if the user is successfully verified or False ortherwise.
+            # At thi point no matter if the value is true or false, it is returning a "Login successful".
+            # Validate it and return 200 or an invalid user error.
             return jsonify({
                 "message": "Login successful",
                 "user": user_data,

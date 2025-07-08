@@ -2,7 +2,7 @@
 
 from flask import Flask, jsonify
 from login_api.config import Config
-from login_api.extensions import db
+from login_api.extensions import db, bcrypt
 from login_api.repositories.user_repository import UserRepository
 from login_api.repositories.auth_repository import AuthRepository
 from login_api.services.user_service import UserService
@@ -13,7 +13,6 @@ from login_api.routes.user_routes import init_user_routes
 from login_api.routes.auth_routes import init_auth_routes
 from login_api.error_handler.exceptions import APIError
 import sys
-
 
 def create_app():
     """
@@ -26,6 +25,9 @@ def create_app():
 
     # Initialize SQLAlchemy with the Flask app
     db.init_app(flask_app)
+
+    # Initialize Flask-Bcrypt for password hashing
+    bcrypt.init_app(flask_app)  
 
     # --- Set up Database (create tables) ---
     with flask_app.app_context():

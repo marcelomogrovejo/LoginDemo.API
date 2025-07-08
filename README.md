@@ -185,3 +185,26 @@ Development vs Production Checklist
 | Port           | 5000            | 80/443 (via proxy)      |
 └----------------┴-----------------┴-------------------------┘
 ```
+
+Bcrypt Implementation
+
+SECRET_KEY
+* Purpose: Used to cryptographically sign sessions, tokens (like JWTs), and secure cookies. Flask-Bcrypt uses it internally for password hashing.
+* Best Practices:
+** Never hardcode (use environment variables):
+
+```python
+# In config.py
+import os
+
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')  # Load from .env file
+```
+** Generate a strong key (run in Python shell):
+```python
+import secrets
+print(secrets.token_hex(32))  # Copy this into your .env file
+```
+** Example .env:
+```text
+SECRET_KEY=your_generated_hex_string_here
+```

@@ -23,7 +23,7 @@ class UserRepository:
         """
         self.db_session = db_session if db_session is not None else db.session
 
-    def add(self, email: str, password_hash: str, first_name: str, last_name: str, is_active: bool) -> User:
+    def add(self, email: str, password: str, first_name: str, last_name: str, is_active: bool) -> User:
         """
         Adds a new user to the database.
 
@@ -43,10 +43,10 @@ class UserRepository:
         """
         try:
             new_user = User(email=email, 
-                            password_hash=password_hash, 
                             first_name=first_name,
                             last_name=last_name,
                             is_active=is_active)
+            new_user.set_password(password)
             self.db_session.add(new_user)
             # No commit here! The service layer will handle transactions.
             self.db_session.flush() # Flush to get the ID if needed immediately (e.g., for related objects)

@@ -3,9 +3,7 @@
 from typing import Optional
 from login_api.repositories.user_repository import UserRepository
 from login_api.error_handler.user_exceptions import UserNotFoundError, UserAlreadyExistsError
-# For password hashing (install Flask-Bcrypt or passlib if not already)
-# from flask_bcrypt import Bcrypt
-# bcrypt = Bcrypt() # Initialize in app.py and pass to service if needed more broadly
+from login_api.extensions import bcrypt
 
 class UserService:
     """
@@ -52,14 +50,9 @@ class UserService:
         if self.user_repo.get_by_email(email):
             raise UserAlreadyExistsError()
 
-        # Business Rule: Password Hashing
-        # In a real app, use a proper hashing library
-        # hashed_password = self.bcrypt.generate_password_hash(password).decode('utf-8')
-        hashed_password = f"hashed_{password}_service" # Placeholder for real hashing
-
         # Delegate to repository
         new_user = self.user_repo.add(email, 
-                                    hashed_password, 
+                                    password, 
                                     first_name,
                                     last_name,
                                     is_active)
