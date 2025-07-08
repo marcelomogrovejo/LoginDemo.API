@@ -208,3 +208,22 @@ print(secrets.token_hex(32))  # Copy this into your .env file
 ```text
 SECRET_KEY=your_generated_hex_string_here
 ```
+
+# Troubleshoting
+
+Delete and recreate your venv:
+```bash
+deactivate
+rm -rf venv
+python -m venv venv
+source venv/bin/activate
+```
+Reinstall dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+Generate requirements.txt
+```bash
+pip freeze > requirements.txt
+```
