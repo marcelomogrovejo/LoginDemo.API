@@ -230,7 +230,7 @@ SECRET_KEY=your_generated_hex_string_here
 
 # Troubleshoting
 
-Delete and recreate your venv:
+Recreate your venv:
 ```bash
 deactivate
 rm -rf venv

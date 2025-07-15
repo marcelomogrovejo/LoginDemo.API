@@ -9,6 +9,7 @@ click==8.1.8
 filelock==3.18.0
 Flask==3.1.1
 Flask-Bcrypt==1.0.1
+Flask-JWT-Extended==4.7.1
 Flask-SQLAlchemy==3.1.1
 fsspec==2025.5.1
 future==1.0.0
@@ -34,7 +35,9 @@ proto-plus==1.26.1
 protobuf==6.31.0
 pyasn1==0.6.1
 pyasn1_modules==0.4.2
+PyJWT==2.10.1
 pyparsing==3.2.3
+python-dotenv==1.1.1
 requests==2.32.3
 requests-oauthlib==2.0.0
 rsa==4.9.1
