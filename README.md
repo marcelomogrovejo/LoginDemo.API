@@ -8,11 +8,11 @@
 1. Create the virtual envirionment: it will create a new folder api_env with the
 necessary files to run the virtual environment.
 ```bash
-$ python -m venv api_env
+$ python -m venv venv
 ```
 2. Activate the new virtual environment:
 ```bash
-$ source api_env/bin/activate
+$ source venv/bin/activate
 ```
 3. Install flask:
 ```bash
@@ -85,32 +85,52 @@ Output:
 └--------------------------┴-----------┘
 ```
 6. Create the freeze requirements file (Like a dependencies):
+```bash
 $ pip3 freeze > requirements.txt
-
+```
 # Structure
 ```console
 loginemoapi/
-├── api_env
+├── .venv/
+├── .vscode/
+│   ├── launch.json
+│   └── settings.json
+├── instance/
+│   └── LoginDemo.db ?? TODO: FIGURE OUT IS THIS IS THE ONE THE APP IS USING
 ├── login_api/
 │   ├── __init__.py                 # To make 'logindemoapi' a Python package
 │   ├── app.py                      # Main Flask application factory
 │   ├── config.py                   # For configuration (optional but good practice)
+│   ├── extensions.py
+│   ├── db/
+│   │   └── LoginDemo.db
+│   ├── error_handler/
+│   │   ├── __init__.py
+│   │   ├── exceptions.py
+│   │   └── user_exceptions.py
 │   ├── models/
 │   │   ├── __init__.py
 │   │   └── user_model.py           # SQLAlchemy models
 │   ├── repositories/
 │   │   ├── __init__.py
+│   │   ├── auth_repository.py
 │   │   └── user_repository.py
 │   ├── services/
 │   │   ├── __init__.py
+│   │   ├── auth_service.py
 │   │   └── user_service.py
 │   ├── controllers/
 │   │   ├── __init__.py
+│   │   ├── auth_controller.py
 │   │   └── user_controller.py
 │   └── routes/
 │       ├── __init__.py
+│       ├── auth_routes.py
 │       └── user_routes.py 
+├── venv/
 ├── tests/
+├── .env
+├── .gitignore
 ├── README.md
 ├── requirements.txt
 └── run.py
@@ -125,7 +145,6 @@ $ python3 run.py
 
 Solutions for Production
 1. For Development (Quick Solution - Just Hide Warning)
-
 ```python
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

@@ -44,16 +44,14 @@ class AuthController:
 
         try:
             # Delegate to the service layer
-            user_data = self.auth_service.authenticate(email, password)
-
-            # TODO: user_data is a bool that is getting True if the user is successfully verified or False ortherwise.
-            # At thi point no matter if the value is true or false, it is returning a "Login successful".
-            # Validate it and return 200 or an invalid user error.
+            isUserValid = self.auth_service.authenticate(email, password)
+            if not isUserValid:
+                raise APIError("Invalid email or password", 401)
+            
             return jsonify({
                 "message": "Login successful",
-                "user": user_data,
                 "token": "dummy_token",  # Replace with actual token generation logic
-                "status": "success"
+                "status": isUserValid 
             }), 200
         except APIError as e:
             raise e
