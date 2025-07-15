@@ -156,3 +156,21 @@ class UserService:
         # except Exception as e:
         #     self.user_repo.db_session.rollback() # Rollback on any unexpected error
         #     raise RuntimeError(f"An unexpected error occurred during user deletion: {e}") from e
+
+    def get_user_by_email(self, email: str) -> dict:
+        """
+        Retrieves a user by email.
+        
+        Args:
+            email (str): The email of the user to retrieve.
+
+        Returns:
+            dict: A dictionary representation of the user.
+
+        Raises:
+            UserNotFoundError: If no user with the given email exists.
+        """
+        user = self.user_repo.get_by_email(email)
+        if not user:
+            raise UserNotFoundError()
+        return user.to_dict()

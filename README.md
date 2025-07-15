@@ -246,3 +246,14 @@ Generate requirements.txt
 ```bash
 pip freeze > requirements.txt
 ```
+
+JWT generate secret:
+```bash
+echo "JWT_SECRET=$(python -c 'import secrets; print(secrets.token_hex(32))')" >> .env
+```
+
+Test JWT
+```bash
+url http://localhost:5000/profile \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+```

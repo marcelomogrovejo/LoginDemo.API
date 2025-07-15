@@ -3,6 +3,7 @@
 from flask import request, jsonify
 from login_api.services.user_service import UserService
 from login_api.error_handler.exceptions import APIError
+from flask_jwt_extended import get_jwt_identity
 
 # You might use a schema validation library here like Marshmallow or Pydantic
 # For simplicity, we'll do basic manual validation.
@@ -127,7 +128,6 @@ class UserController:
         """
         data = request.get_json()
         if not data:
-            # return jsonify({"message": "No input data provided"}), 400
             raise APIError("No input data provided", 400)
         first_name = data.get('first_name', '')
         last_name = data.get('last_name', '')
@@ -144,11 +144,8 @@ class UserController:
                 "message": "User updated successfully",
                 "user": updated_user_data
             }), 200
-        # except ValueError as e:
-        #     return jsonify({"message": str(e)}), 404
         except Exception as e:
             print(f"Unhandled error in UserController.update_user: {e}")
-            # return jsonify({"message": "An unexpected error occurred."}), 500
             raise APIError("An unexpected error occurred while updating the user", 500)
         
     def delete_user(self, user_id: int):
@@ -167,9 +164,15 @@ class UserController:
         try:
             self.user_service.delete_user(user_id)
             return jsonify({"message": "User deleted successfully"}), 204
-        # except ValueError as e:
-        #     return jsonify({"message": str(e)}), 404
         except Exception as e:
             print(f"Unhandled error in UserController.delete_user: {e}")
-            # return jsonify({"message": "An unexpected error occurred."}), 500
             raise APIError("An unexpected error occurred while deleting the user", 500)
+    
+    # Handles GET /profile request to retrieve the profile of the authenticated user.
+    # This method uses JWT to identify the user.
+    # It retrieves the user data by email.
+    # This method is just exposed for demonstration purposes.
+    def profile(self):
+        user_email = get_jwt_identity()  # Get user ID from JWT
+        user = self.user_service.get_user_by_email(user_email)
+        return user

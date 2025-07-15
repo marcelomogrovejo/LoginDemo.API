@@ -89,6 +89,15 @@ def create_app():
     @flask_app.errorhandler(500)
     def handle_server_error(e):
         return jsonify(message="Internal server error"), 500
+    
+    # --- JWST Error Handler ---
+    @jwt.unauthorized_loader
+    def handle_missing_token(error):
+        return {"error": "Missing or invalid token"}, 401
+    
+    @jwt.invalid_token_loader
+    def handle_invalid_token(error):
+        return {"error": "Invalid token"}, 401
 
     return flask_app
 
