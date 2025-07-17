@@ -1,6 +1,6 @@
 # logindemoapi/models/user_model.py
 
-from login_api.extensions import db
+from login_api.extensions import db, bcrypt
 from datetime import datetime, timezone
 
 class User(db.Model):
@@ -35,6 +35,27 @@ class User(db.Model):
             "updated_at": self.updated_at.isoformat()
         }
     
+    def set_password(self, password: str):
+        """
+        Hash and save the password.
+
+        Args:
+            password (str): The plaintext password to hash and store.
+        """
+        self.password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
+
+    def verify_hashed_password(self, password: str) -> bool:
+        """
+        Verify the password against the stored hash.
+
+        Args:
+            password (str): The password to verify.
+
+        Returns:
+            bool: True if the password matches, False otherwise.
+        """
+        return bcrypt.check_password_hash(self.password_hash, password)
+    
     def verify_password(self, password: str) -> bool:
         """
         Verifies the provided password against the stored password hash.
@@ -47,3 +68,4 @@ class User(db.Model):
         """
         # Placeholder for real password verification logic
         return self.password_hash == f"hashed_{password}_service"
+    

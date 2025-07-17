@@ -38,8 +38,12 @@ class AuthRepository:
         """
         try:
             user = self.db_session.query(User).filter_by(email=email).first()
-            if user and user.verify_password(password):
-                return True
-            return False
+            # verify_hashed_password is a method in the User model that checks the password against the stored hash
+            # If the user is not found or the password does not match, it returns False
+            # If the user is found and the password matches, it returns True
+            # This method is triggering an error 500 when it tries to verify an not hashed password
+            if not user or not user.verify_hashed_password(password):
+                return False
+            return True
         except SQLAlchemyError as e:
             raise DatabaseError(str(e)) from e

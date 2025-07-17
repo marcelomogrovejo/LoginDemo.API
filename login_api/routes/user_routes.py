@@ -2,6 +2,7 @@
 
 from flask import Blueprint
 from login_api.controllers.user_controller import UserController # Relative import
+from flask_jwt_extended import jwt_required
 
 # Versioning for user routes
 # This versioning allows for future changes without breaking existing clients.
@@ -28,5 +29,8 @@ def init_user_routes(controller: UserController):
     user_bp.add_url_rule('/<int:user_id>', 'get_user_by_id', _user_controller.get_user_by_id, methods=['GET'])
     user_bp.add_url_rule('/<int:user_id>', 'update_user', _user_controller.update_user, methods=['PUT'])
     user_bp.add_url_rule('/<int:user_id>', 'delete_user', _user_controller.delete_user, methods=['DELETE'])
+
+    # Adding a profile route that requires JWT authentication
+    user_bp.add_url_rule('/profile', 'profile', jwt_required()(_user_controller.profile), methods=['GET'])
 
     return user_bp

@@ -3,9 +3,7 @@
 from typing import Optional
 from login_api.repositories.user_repository import UserRepository
 from login_api.error_handler.user_exceptions import UserNotFoundError, UserAlreadyExistsError
-# For password hashing (install Flask-Bcrypt or passlib if not already)
-# from flask_bcrypt import Bcrypt
-# bcrypt = Bcrypt() # Initialize in app.py and pass to service if needed more broadly
+from login_api.extensions import bcrypt
 
 class UserService:
     """
@@ -52,14 +50,9 @@ class UserService:
         if self.user_repo.get_by_email(email):
             raise UserAlreadyExistsError()
 
-        # Business Rule: Password Hashing
-        # In a real app, use a proper hashing library
-        # hashed_password = self.bcrypt.generate_password_hash(password).decode('utf-8')
-        hashed_password = f"hashed_{password}_service" # Placeholder for real hashing
-
         # Delegate to repository
         new_user = self.user_repo.add(email, 
-                                    hashed_password, 
+                                    password, 
                                     first_name,
                                     last_name,
                                     is_active)
@@ -163,3 +156,21 @@ class UserService:
         # except Exception as e:
         #     self.user_repo.db_session.rollback() # Rollback on any unexpected error
         #     raise RuntimeError(f"An unexpected error occurred during user deletion: {e}") from e
+
+    def get_user_by_email(self, email: str) -> dict:
+        """
+        Retrieves a user by email.
+        
+        Args:
+            email (str): The email of the user to retrieve.
+
+        Returns:
+            dict: A dictionary representation of the user.
+
+        Raises:
+            UserNotFoundError: If no user with the given email exists.
+        """
+        user = self.user_repo.get_by_email(email)
+        if not user:
+            raise UserNotFoundError()
+        return user.to_dict()

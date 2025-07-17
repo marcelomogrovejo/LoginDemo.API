@@ -3,6 +3,7 @@
 from flask import request, jsonify
 from login_api.services.auth_service import AuthService
 from login_api.error_handler.exceptions import APIError
+from flask_jwt_extended import create_access_token
 
 
 class AuthController:
@@ -44,12 +45,18 @@ class AuthController:
 
         try:
             # Delegate to the service layer
-            user_data = self.auth_service.authenticate(email, password)
+            isUserValid = self.auth_service.authenticate(email, password)
+            if not isUserValid:
+                raise APIError("Invalid email or password", 401)
+            
+            # Generate JWT token
+            # TODO: need the user id, for now it will be the email for simplicity.
+            access_token = create_access_token(identity=email)
+
             return jsonify({
                 "message": "Login successful",
-                "user": user_data,
-                "token": "dummy_token",  # Replace with actual token generation logic
-                "status": "success"
+                "token": access_token,
+                "status": isUserValid 
             }), 200
         except APIError as e:
             raise e
